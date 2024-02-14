@@ -39,6 +39,11 @@ app.MapPost("/notebooks", async ([FromBody]AddNotebookRequest request, [FromServ
     return $"Added notebook with id: {notebook.Id}";
 });
 
+app.MapGet("/notebooks/includes/{text}", async ([FromServices] ApplicationContext db, string text) =>
+{
+    return await db.Notebooks.Where(notebook => notebook.Title.Contains(text)).ToListAsync();
+});
+
 using var scope = app.Services.CreateScope();
 await scope.ServiceProvider.GetRequiredService<ApplicationContext>().Database.MigrateAsync();
 
